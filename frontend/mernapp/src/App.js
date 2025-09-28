@@ -1,47 +1,29 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Signup from "./pages/signup";
-import Login from "./pages/login"; // 
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/login";        
+import Dashboard from "./pages/Dashboard"; 
 
 function App() {
+  
+  const isAuth = !!localStorage.getItem("token");
+
   return (
     <Router>
-      <div>
-        {/* Simple Navbar */}
-        <nav style={styles.navbar}>
-          <h2 style={styles.logo}>MyApp</h2>
-          <div>
-            <Link style={styles.link} to="/signup">Signup</Link>
-            <Link style={styles.link} to="/login">Login</Link> {/* ✅ Login link */}
-          </div>
-        </nav>
+      <Routes>
+        {/* Login page */}
+        <Route path="/login" element={<login />} />
+  
+        {/* Dashboard page with auth check */}
+        <Route
+          path="/dashboard"
+          element={isAuth ? <Dashboard /> : <Navigate to="/login" replace />}
+        />
 
-        {/* Routes */}
-        <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} /> {/* ✅ Login route */}
-        </Routes>
-      </div>
+        {/* Redirect all other paths to login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </Router>
   );
 }
-
-const styles = {
-  navbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "1rem 2rem",
-    background: "#2575fc",
-    color: "#fff",
-  },
-  logo: { margin: 0 },
-  link: {
-    marginLeft: "1rem",
-    textDecoration: "none",
-    color: "#fff",
-    fontWeight: "bold",
-  },
-};
 
 export default App;
